@@ -192,24 +192,18 @@ def train_gcn(args,device):
     
 
 
-
-    log_summary = '/srv/storage/datasets/thiagocoutinho/summaries/GCN/'+str(args.type)+'/feauture_vector_salsa/ADAM_discriminator_'+str(args.adam)+'/MSE_'+str(args.mse)+'/last_layer_'+str(args.last_layer)+'/no_elvis_'+time_init+'_trick_'+str(args.flip)+'_lr_g_'+str(args.lr_g)+'_lr_d_'+str(args.lr_d)+'_batch_size_'+str(args.bs)+'_lambda_l1_'+str(args.lambda_l1)+'_lambda_dis_'+str(args.lambda_discriminator)+'_lambda_l2_'+str(args.lambda_l2)+'_early_stop_'+str(args.early_stop)+'_act_layer_g_'+str(args.act_layer_g)+'_act_layer_d_'+str(args.act_layer_d)+'_dropout_'+str(args.dropout)+'_dataset_'+str(args.dataset).split('/')[-2]
+    if args.summary is None:
+        log_summary = '/tmp/summary/'
+    else:
+        log_summary = args.summary
     summary = SummaryWriter(log_dir=log_summary)
-    gen_checkpoint_path = '/srv/storage/datasets/thiagocoutinho/checkpoints/GCN/generator/'+str(args.type)+'/feauture_vector_salsa/ADAM_discriminator_'+str(args.adam)+'/MSE_'+str(args.mse)+'/last_layer_'+str(args.last_layer)+'/no_elvis_'+time_init+'_trick_'+str(args.flip)+'_lr_g_'+str(args.lr_g)+'_lr_d_'+str(args.lr_d)+'_batch_size_'+str(args.bs)+'_lambda_l1_'+str(args.lambda_l1)+'_lambda_dis_'+str(args.lambda_discriminator)+'_lambda_l2_'+str(args.lambda_l2)+'_early_stop_'+str(args.early_stop)+'_act_layer_g_'+str(args.act_layer_g)+'_act_layer_d_'+str(args.act_layer_d)+'_dropout_'+str(args.dropout)+'_dataset_'+str(args.dataset).split('/')[-2]+'.pt'
-    dis_checkpoint_path = '/srv/storage/datasets/thiagocoutinho/checkpoints/GCN/discriminator/'+str(args.type)+'/feauture_vector_salsa/ADAM_discriminator_'+str(args.adam)+'/MSE_'+str(args.mse)+'/last_layer_'+str(args.last_layer)+'/no_elvis_'+time_init+'_trick_'+str(args.flip)+'_lr_g_'+str(args.lr_g)+'_lr_d_'+str(args.lr_d)+'_batch_size_'+str(args.bs)+'_lambda_l1_'+str(args.lambda_l1)+'_lambda_dis_'+str(args.lambda_discriminator)+'_lambda_l2_'+str(args.lambda_l2)+'_early_stop_'+str(args.early_stop)+'_act_layer_g_'+str(args.act_layer_g)+'_act_layer_d_'+str(args.act_layer_d)+'_dropout_'+str(args.dropout)+'_dataset_'+str(args.dataset).split('/')[-2]+'.pt'
+    gen_checkpoint_path = args.ckp_save_path+'_generator.pt'
+    dis_checkpoint_path = args.ckp_save_path+'_discriminator.pt'
     try:
-        os.makedirs('/srv/storage/datasets/thiagocoutinho/checkpoints/GCN/generator/'+str(args.type)+'/feauture_vector_salsa/ADAM_discriminator_'+str(args.adam)+'/MSE_'+str(args.mse)+'/last_layer_'+str(args.last_layer)+'/',exist_ok=True)
+        os.makedirs(args.ckp_save_path,exist_ok=True)
     except Exception as e:
-      pass
-    try:
-        os.makedirs('/srv/storage/datasets/thiagocoutinho/checkpoints/GCN/discriminator/'+str(args.type)+'/feauture_vector_salsa/ADAM_discriminator_'+str(args.adam)+'/MSE_'+str(args.mse)+'/last_layer_'+str(args.last_layer)+'/',exist_ok=True)
-    except:
         pass
-    '''dataset = lets_dance_dataset(args.dataset,32 ,sample_size=args.size_sample)
-    styles_dic = dataset.styles_dict
-    dataloaders = {
-        'train': torch.utils.data.DataLoader(dataset, batch_size=args.bs, shuffle=True, num_workers=args.workers,collate_fn=collate)
-    }'''
+
     dataset = pose_audio_dataset(args.dataset, sample_size=64, stride=32, \
     data_aug = 1, create_z=False, sample_rate=16000, keep_wav=True, styles_to_remove=[],pre_process=True)
     styles_dic = dataset.styles
@@ -217,21 +211,18 @@ def train_gcn(args,device):
         'train' : torch.utils.data.DataLoader(dataset, batch_size=args.bs, shuffle=True, num_workers=args.workers, collate_fn=collate)
     }
     
-    # draw_z(summary)
-
-    # pdb.set_trace()
     ##############################################
     #### NETWORKS INITIALIZATION #################
     ##############################################
     
-    # generator_network = generator_1d(args.num_class,args.size_sample,args.sum,args.use_kp) 
-    generator_network = Generator(device,args.num_class,args.size_sample,args.act_layer_g,args.dropout,args.last_layer,args.type,args.ft)
+    generator_network = Generator(device,args.num_class,args.dropout)
     generator_optimizer_ft = torch.optim.Adam(filter(lambda p: p.requires_grad, generator_network.parameters()), lr=args.lr_g,betas=(0.5, 0.999))
     generator_exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(generator_optimizer_ft, step_size=30, gamma=0.1)
 
     generator_network.to(device)
 
-    discriminator = Discriminator(device,args.num_class,args.size_sample,args.act_layer_d,args.type,args.ft)
+    discriminator = Discriminator(device,args.num_class,args.size_sample)
+
     if args.adam:
         discriminator_optimizer_ft = torch.optim.Adam(filter(lambda p: p.requires_grad, discriminator.parameters()), lr=args.lr_d,betas=(0.5, 0.999))
     else:
@@ -239,7 +230,6 @@ def train_gcn(args,device):
     discriminator_exp_lr_scheduler = torch.optim.lr_scheduler.StepLR(discriminator_optimizer_ft, step_size=30, gamma=0.1)
 
     discriminator.to(device)
-    # discriminator.train()
 
     generator_params,discriminator_params = sum(p.numel() for p in generator_network.parameters() if p.requires_grad ),sum(p.numel() for p in discriminator.parameters() if p.requires_grad)
 
@@ -253,18 +243,6 @@ def train_gcn(args,device):
     else:
         bce_loss = torch.nn.BCELoss().to(device)
     
-
-
-    ############################
-    ##INSTACE AUDIO_CLASSIFIER##
-    ############################
-    if args.ft:
-        audio_model = cnn_1d_soudnet(3,False)
-    else:
-        audio_model = cnn_1d_soudnet(3)
-    audio_model.load_state_dict(torch.load(args.a_ckp_path))
-    audio_model.to(device)
-    audio_model.eval()
 
     ####################
     ##TRAINING LOOP#####
@@ -294,78 +272,29 @@ def train_gcn(args,device):
                 z = z.to(device)
                 audio = audio.to(device)
 
-
-                if args.ft:
-                    ft_vectors,_ = audio_model(audio.view(z.shape[0],1,-1))
-                    ft_vectors = ft_vectors.to(device)
-
-                #####OVERFIT####
-                # z_aux = torch.cat(len(z)*[z_mean])
-                # label_aux = torch.cat(len(z)*[label_mean])
-                # kp_aux = torch.cat(len(z)*[mean_kp])
-                ################
-
-                # pdb.set_trace()
-                # with torch.set_grad_enabled(True):
-                # generator_optimizer_ft.zero_grad()
-                # discriminator_optimizer_ft.zero_grad()
                 generator_optimizer_ft.zero_grad()
 
-                if args.ft:
-                    fake_pose = generator_network(ft_vectors,z)
-                else:
-                    fake_pose = generator_network(labels,z)
-                # fake_pose = generator_network(labels,torch.cat((z,mean_kp.repeat(len(z),1,1,1)),1))    
+                fake_pose = generator_network(labels,z)
 
-                # if flip:
-                #     discriminator_pred_fake = discriminator(poses,labels)
-                #     # discriminator_pred_real = discriminator(fake_pose,labels)
-                # else:
-                #     discriminator_pred_fake = discriminator(fake_pose,labels)
-                    # discriminator_pred_real = discriminator(poses,labels)
-                if args.ft:
-                    # pdb.set_trace()
-                    pred_fake = discriminator(fake_pose,ft_vectors)
-                else:
-                    pred_fake = discriminator(fake_pose,labels)
+                pred_fake = discriminator(fake_pose,labels)
                
                 l1 = loss_l1(fake_pose,poses)
                 l2 = loss_l2(fake_pose, poses)
                 lg = bce_loss(torch.flatten(pred_fake),valid)
                
-                if args.early_stop != 0:
-                    if epoch < args.early_stop :
-                        lgen = args.lambda_l1*l1+args.lambda_discriminator*lg+args.lambda_l2*l2
-                    else:
-                        lgen = args.lambda_discriminator*lg
-                else:
-                    lgen = args.lambda_l1*l1+args.lambda_discriminator*lg+args.lambda_l2*l2
+                lgen = args.lambda_l1*l1+args.lambda_discriminator*lg+args.lambda_l2*l2
 
 
                 lgen.backward(retain_graph=True)
                 generator_optimizer_ft.step()
-                # generator_exp_lr_scheduler.step()
-                # ld = loss_discriminator(discriminator_pred_real,discriminator_pred_fake)
-                # lg = loss_generator(discriminator_pred_fake)
-
-
 
                 discriminator_optimizer_ft.zero_grad()
                 if flip:
-                    if args.ft:
-                        discriminator_pred_fake = discriminator(poses,ft_vectors)
-                        discriminator_pred_real = discriminator(fake_pose,ft_vectors)
-                    else:
-                        discriminator_pred_fake = discriminator(poses,labels)
-                        discriminator_pred_real = discriminator(fake_pose,labels)
+                    discriminator_pred_fake = discriminator(poses,labels)
+                    discriminator_pred_real = discriminator(fake_pose,labels)
                 else:
-                    if args.ft:
-                        discriminator_pred_fake = discriminator(fake_pose,ft_vectors)
-                        discriminator_pred_real = discriminator(poses,ft_vectors)
-
-                    else:
-                        discriminator_pred_fake = discriminator(fake_pose,labels)
-                        discriminator_pred_real = discriminator(poses,labels)
+                    discriminator_pred_fake = discriminator(fake_pose,labels)
+                    discriminator_pred_real = discriminator(poses,labels)
 
                 ld_real = bce_loss(torch.flatten(discriminator_pred_real),valid)
                 ld_fake = bce_loss(torch.flatten(discriminator_pred_fake),fake)
@@ -374,29 +303,6 @@ def train_gcn(args,device):
 
                 ld.backward()
                 discriminator_optimizer_ft.step()
-                # discriminator_exp_lr_scheduler.step()
-                # l1x,l1y = loss_l1(fake_pose,mean_kps)
-                # lgen = l1y+100*l1x
-
-
-                # lgen = lg
-
-                # if args.l1:
-                #     lgen = l1+lg
-                # else:
-                #     lgen = lg
-                # lgen = l1x+l1y
-
-
-                ##BACKWARD##
-                # if epoch % 2 == 0:
-
-                # lgen.backward(retain_graph=True)
-
-                # else:
-
-                # ld.backward(retain_graph=True)
-
 
                 ######LOGS########
                 print('Train Epoch: {}/{} [{}/{} ({:.0f}%)]\t Loss: G: {:.5f}|D: {:.5f}'.format(
@@ -747,14 +653,6 @@ def make_video(name,predictions,n,normalized=3):
             out_video_white.write((image_white*255).astype(np.uint8))
         out_video.release()
         out_video_white.release()
-
-            # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            # image = cv2.resize(image,(640,360))
-        #     images_final.append(image)
-        #     images_final_white.append(image_white)
-        # images_final = np.array(images_final)
-        # images_final_white = np.array(images_final_white)
-        # return images_final, images_final_white
     except Exception as e:
         pdb.set_trace()
         f = open('exception.txt','a+')
@@ -774,30 +672,13 @@ def get_audio_torch(input_path):
 
     return audio.float()
 
-def get_audio(input_path):
-    from scipy.io import wavfile as wav
-
-    rate, data = wav.read(input_path)
-    
-    if len(data.shape) == 2:
-        if data.shape[1] == 2:
-            data = data.sum(axis=1)/2
-
-    data = np.resize(data,(66150*math.ceil(len(data)/66150)))
-    data = data.reshape((-1,66150))
-
-    return data
-
 def test(args,device):
      #actual 0->ballet;1->country;2->michael 
     #old 0->ballet;1->michael;2->country
     styles_dic = {0:0,1:2,2:1}
 
 
-    if args.ft:
-        audio_model = cnn_1d_soudnet(3,False)    
-    else:
-        audio_model = cnn_1d_soudnet(3)
+    audio_model = cnn_1d_soudnet(3)
     audio_model.load_state_dict(torch.load(args.a_ckp_path))
     audio_model.to(device)
     model = Generator(device,args.num_class,args.size_sample,args.act_layer_g,args.dropout,args.last_layer,args.type,args.ft,False)
@@ -812,17 +693,10 @@ def test(args,device):
 
     z = torch.Tensor(make_z_vary(None, 512, args.size_video, int(video_size/16))).view(1,512,-1,1).to(device)
 
-    if args.ft:
-        ft_vector,label = audio_model(audio[:,:int(int(audio.shape[1]/int(z.shape[2]/4))*int(z.shape[2]/4))].to(device).view(int(z.shape[2]/4),1,-1))
-        ft_vector = ft_vector.to(device)
-        label = label.argmax(1).cpu().data.to(device)
-        #pdb.set_trace()
-        draw_poses = model(ft_vector,z)
-    else:
-        label = audio_model(audio[:,:int(int(audio.shape[1]/int(z.shape[2]/4))*int(z.shape[2]/4))].to(device).view(int(z.shape[2]/4),1,-1))
+    label = audio_model(audio[:,:int(int(audio.shape[1]/int(z.shape[2]/4))*int(z.shape[2]/4))].to(device).view(int(z.shape[2]/4),1,-1))
 
-        label = label.argmax(1).cpu().data.to(device)
-        draw_poses = model(label,z)
+    label = label.argmax(1).cpu().data.to(device)
+    draw_poses = model(label,z)
 
     notorch_pose = draw_poses[0].permute(1, 2, 0).cpu().data.numpy()
     try:
@@ -838,7 +712,6 @@ def test(args,device):
     elif label_0 == 2:
         video_name = '/salsa'
 
-    #print("Writing video...")
     os.makedirs(args.out_video + video_name + '/vid2vid/test_img/', exist_ok=True)
     make_video(args.out_video + video_name + '/' + video_name, notorch_pose,video_size)
 
@@ -862,66 +735,6 @@ def test(args,device):
         do_splines(args.out_video + video_name + '/vid2vid/')
     return
 
-def test_multiple(args,device):
-    #actual 0->ballet;1->country;2->michael
-    #old 0->ballet;1->michael;2->country
-    styles_dic = {0:0,1:2,2:1}
-
-
-    audio_model = cnn_1d_soudnet(3)
-    audio_model.load_state_dict(torch.load(args.a_ckp_path))
-    audio_model.to(device)
-    model = Generator(device,args.num_class,args.size_sample,args.act_layer_g,args.dropout,args.last_layer,args.type,args.ft,False)
-    model.load_state_dict(torch.load(args.ckp_path))
-    model.to(device)
-
-    audio_model.eval()
-    model.eval()
-    
-    audio = get_audio(args.input)
-
-    zs = []
-    labels = []
-    for i in range(len(audio)):
-        zs.append(torch.Tensor(make_z_vary(None,512,args.size_video,int(args.size_video/16))).view(512,-1,1))
-        label = audio_model(torch.Tensor(audio[i]).to(device).view(1,1,-1)).cpu().data.tolist()
-        labels.append(styles_dic[np.argmax(np.asarray(label))])
-    zs = torch.stack(zs).to(device)
-    labels = torch.LongTensor(labels).view(-1,1).to(device)
-
-    # zs = torch.Tensor(np.load('audio/billie_jean.npy')).to(device).view(1,512,-1,1)
-    # labels = torch.LongTensor([]).view(1,1)
-    # pdb.set_trace()
-    draw_poses = model(labels,zs)
-
-    try:
-        os.mkdir(args.out_video)
-    except:
-        pass
-
-    out_labels = labels.cpu().data.tolist()
-    # pdb.set_trace()
-    for i,pose in enumerate(draw_poses):
-        notorch_pose = pose.permute(1, 2, 0).cpu().data.numpy()
-        if out_labels[i][0] == 0:
-            video_name = 'ballet_' + str(i)
-
-        elif out_labels[i][0] == 1:
-            video_name = 'country_' + str(i)
-
-        elif out_labels[i][0] == 2:
-            video_name = 'michael_' + str(i)
-
-        os.makedirs(args.out_video + video_name + '/vid2vid/test_img/', exist_ok=True)
-        make_video(args.out_video + video_name + '/' + video_name, notorch_pose, args.size_sample)
-
-        cmd = "ffmpeg -loglevel error -i '" + args.out_video + video_name + '/' + video_name + "_black.mp4' '" + \
-            args.out_video + video_name + '/vid2vid/test_img/' + video_name + "_%04d.jpg'"  
-        os.system(cmd)
-
-        write_jsons(args.out_video + video_name, notorch_pose, args.size_sample)
-    return
-
 def main():
     args = parse_args()
 
@@ -942,6 +755,8 @@ def parse_args():
     
     parser.add_argument('--ckp_save_path', dest='ckp_save_path', help='path to save checkpoints of the model')
 
+    parser.add_argument('--summary_dir', dest='summary', help='path to save summaries of training')
+    
     parser.add_argument('-e', '--epochs',type=int, dest='epochs', help='number of epochs', default='500')
 
     parser.add_argument('-b', '--batch_size',type=int, dest='bs', help='batch size', default='8')
@@ -964,7 +779,7 @@ def parse_args():
 
     parser.add_argument('--flip', type=float, dest='flip', help='trick the discriminator fliping values', default='1')
 
-    parser.add_argument('-k', '--cpk_path', dest='ckp_path', help='path to checkpoints of the model')
+    parser.add_argument('-k', '--cpk_path', dest='ckp_path', help='path to load the checkpoints of the model')
 
     parser.add_argument('-o', '--out_video', dest='out_video', help='path to save videos *.mp4')
 
@@ -996,8 +811,8 @@ def parse_args():
         parser.error("[--phase] train requires [--dataset]")
         sys.exit()
 
-    if args.phase == 'train' and args.ckp_path is None:
-        parser.error("[--phase] train requires [--cpk_path]")
+    if args.phase == 'train' and args.ckp_save_path is None:
+        parser.error("[--phase] train requires [--ckp_save_path]")
         sys.exit()
     
     if args.phase == 'test' and args.ckp_path is None:
@@ -1018,15 +833,6 @@ def parse_args():
 
     return args
 
-def exponentiated_quadratic(xa, xb,sigma=10):
-    """Exponentiated quadratic  with sigma=1"""
-    # L2 distance (Squared Euclidian)
-    sq_norm = -1*scipy.spatial.distance.cdist(xa, xb, 'sqeuclidean')/(2*(sigma**2))
-    return np.exp(sq_norm)
-
-def make_line_z():
-    return np.repeat(np.random.random_sample(),4096).reshape(1024,4)
-
 def make_z_vary(idx,c,t,m):
     if idx is not None:
         np.random.seed(idx)
@@ -1045,23 +851,6 @@ def make_z_vary(idx,c,t,m):
         z.append(fs)
     z = np.asarray(z)
     return z
-
-def make_z(idx,nb_of_samples=64,number_of_functions=1):
-
-    #######SETTING SEED#########
-    np.random.seed(idx)
-    ############################
-
-    X = np.expand_dims(np.linspace(0, nb_of_samples, nb_of_samples), 1)
-    cov = exponentiated_quadratic(X, X)  # Kernel of data points
-
-    ys = np.random.multivariate_normal(
-        mean=np.zeros(nb_of_samples), cov=cov, 
-        size=number_of_functions)
-    #normalizing between -1 and 1
-    ys = (ys-ys.min())/(ys.max()-ys.min())*2-1
-    
-    return np.asarray(ys)
 
 def do_splines(img_path):
     
