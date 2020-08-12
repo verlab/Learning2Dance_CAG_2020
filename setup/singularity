@@ -1,9 +1,15 @@
 Bootstrap: docker
 From: pytorch/pytorch:1.4-cuda10.1-cudnn7-devel
 
+%help
+    Learning2Dance recipe file to build singularity container.
+%files
+    requirements.txt /tmp
 %post
     echo "Installing Required Packages"
     apt update -y
     apt upgrade -y
     apt install ffmpeg python3-pip -y
-    pip3 install -r requirements.txt
+    pip3 install -r /tmp/requirements.txt
+%test
+    python3 -c "import torch"
