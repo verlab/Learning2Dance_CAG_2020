@@ -31,7 +31,13 @@
 
 ## 3 - Build a Dcoker container:
 
-  Comming Soon!
+  To build de image using the Dockerfile run the following command in the ```setup``` folder:
+
+  ```docker build -t NAME_YOUR_IMAGE .```
+
+  After the process of build an image finish, you can acess an shell prompt from the image, creating an container and using the following command:
+
+  ```docker container run -it NAME_YOUR_IMAGE /bin/bash```
 
 # Generate Motion:
 
