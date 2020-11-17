@@ -10,9 +10,18 @@
 
 <h1 align="center"> <b>Learning to Dance - Code </b></h1>
 
-<video align="center" width="auto" controls>
-  <source src="./docs/assets/learning_to_dance.mp4" type="video/mp4">
-</video>
+![Example of method.](./docs/assets/learning_to_dance.png)
+
+
+
+<p align="center"><iframe width="420" height="315"
+src="https://www.youtube.com/embed/fGDK6UkKzvA?controls=0">
+</iframe></p>
+<!-- (https://www.youtube.com/watch?v=fGDK6UkKzvA) -->
+
+<!-- <video align="center" width="auto" controls> -->
+  <!-- <source src="https://www.youtube.com/watch?v=fGDK6UkKzvA&feature=emb_logo" type="video/mp4"> -->
+<!-- </video> -->
 
 
 # Setup:
@@ -41,10 +50,33 @@
 
 # Generate Motion:
 
-* 
+* To generate motion using our pre-trained weights you must specify the path of the weights for both, the audio classifier and the generator networks. You can download the wieghts [here]() or [here](). Or you can get the weights in the folder ```/weights```.
+
+* The command to test our method is as follow:
+```python main.py -p test --input PATH_TO_AUDIO.WAV --cpk_path PATH_TO_GENERATOR_WEIGHTS.pt --audio_ckp PATH_TO_AUDIO_CLASSIFIER_WEIGHTS.pt --out_video PATH_TO_SAVE_OUTPUT_FILES```
+
+* Other useful parameters can be seen using the flag ```--help```. However not every parameter is used in the test phase.
 
 # Training:
 
-* 
+* To train our method you must have a dataset following the structure describe [here](./dataset_tools/README.md). Alternatively you can download you dataset following the instructions [here](./dataset.md)
+
+* The command to train you method is as follow:
+```python main.py -p train -d PATH_TO_DATSET --ckp_save_path PATH_TO_SAVE_WEIGHTS```
+
+* Other useful parameters can be seen using the flag ```--help```. However not every parameter is used in the train phase.
 
 # bibtex
+
+```
+@article{ferreira2020cag,
+  author = “João P. Ferreira and Thiago M. Coutinho and Thiago L. Gomes and José F. Neto and Rafael Azevedo and Renato Martins and Erickson R. Nascimento”,
+  title = “Learning to dance: A graph convolutional adversarial network to generate realistic dance motions from audio”,
+  journal = “Computers & Graphics”,
+  volume = “94”,
+  pages = “11 – 21”,
+  year = “2021”,
+  issn = “0097-8493”,
+  doi = “https://doi.org/10.1016/j.cag.2020.09.009”,
+}
+```

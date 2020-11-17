@@ -27,4 +27,6 @@ Alternatively you can download our datasets using this [link](https://drive.goog
 
 # Dataset Information:
 
-* 
+* The Table below show the number of samples in the dataset. 
+
+![number of samples in the dataset](./docs/assets/data_stats.png)
