@@ -13,10 +13,11 @@
 ![Example of method.](./docs/assets/learning_to_dance.png)
 
 
+[![video of the project](https://img.youtube.com/vi/fGDK6UkKzvA/0.jpg)](https://www.youtube.com/watch?v=fGDK6UkKzvA)
 
-<p align="center"><iframe width="420" height="315"
+<!-- <p align="center"><iframe width="420" height="315"
 src="https://www.youtube.com/embed/fGDK6UkKzvA?controls=0">
-</iframe></p>
+</iframe></p> -->
 <!-- (https://www.youtube.com/watch?v=fGDK6UkKzvA) -->
 
 <!-- <video align="center" width="auto" controls> -->
