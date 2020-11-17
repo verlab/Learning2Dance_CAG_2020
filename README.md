@@ -1,8 +1,8 @@
-## <b>L2D: Learning to dance from music audio</b> <br>[[Project Page]](https://www.verlab.dcc.ufmg.br/motion-analysis/cag2020/) [[Paper]](https://doi.org/10.1016/j.cag.2020.09.009) [[Video]](https://www.youtube.com/watch?v=fGDK6UkKzvA)
-
-<img src='docs/assets/learning_to_dance.png' align="center" width=900 />
+## <b>L2D: Learning to dance from music audio</b> <br>[[Project Page]](https://verlab.github.io/Learning2Dance_CAG_2020/) [[Paper]](https://doi.org/10.1016/j.cag.2020.09.009) [[Video]](https://www.youtube.com/watch?v=fGDK6UkKzvA)
 
 Pytorch implementation of our multi-modal graph convolutional adversarial network model to generate human motion from music.
+
+<img src='docs/assets/learning_to_dance.png' align="center" width=900 />
 
 ## Introduction
 
@@ -32,14 +32,14 @@ Please cite L2D in your publications if it helps your research:
   You must have installed CUDA and CUDNN with compatible versions with PyTorch 1.4. We use CUDA in version 10.1 and CUDNN in version 7. You can use the cpu version of torch, however you probably have to solve some issues on the requirements.
 
   ```sudo apt update -y && sudo apt upgrade -y sudo apt install python3-pip ffmpeg -y && sudo pip install -r setup/requirements.txt```
-### 2 - Build a Singularity container:
+### 2 - Building a Singularity container:
   To build a [Singularity](https://sylabs.io/docs/) conatiner you should have singularity installed in your system at minimum version 2.3. Then you must move the files ```requirements.txt``` and ```singularity``` to the folder we want to build your contanier, then run on the folder you just copy the files:
 
   ```sudo singularity build NAME_YOUR_CONATINER singularity```
 
   Also you should take a look in some build flags of singularity (_e.g._ ```--sandbox``` or ```--notest```)
 
-### 3 - Build a Dcoker container:
+### 3 - Building a Docker container:
 
   To build de image using the Dockerfile run the following command in the ```setup``` folder:
 
@@ -66,6 +66,12 @@ Please cite L2D in your publications if it helps your research:
 ```python main.py -p train -d PATH_TO_DATSET --ckp_save_path PATH_TO_SAVE_WEIGHTS```
 
 * Other useful parameters can be seen using the flag ```--help```. However not every parameter is used in the train phase.
+
+## Dataset
+
+Please check the dataset (videos, audios) and provided data tools in [DATASET.md](dataset_tools/README.md) for detailed instructions.
+
+<img src='docs/assets/dataset.png' align="center" width=900 />
 
 <img align="left" width="auto" height="75" src="./docs/assets/ufmg.png">
 <img align="right" width="auto" height="75" src="./docs/assets/verlab.png">
