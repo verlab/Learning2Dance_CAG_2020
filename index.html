@@ -49,7 +49,7 @@
 			<h5 class="text-center">Rafael Vieira</h5>
 		</div>
 		<div class="col-md-2">
-			<h5 class="text-center">Renato Martins</h5>
+			<h5 class="text-center"><a href="http://www-sop.inria.fr/members/Renato-Jose.Martins/index.html">Renato Martins</a></h5>
 		</div>
 		<div class="col-md-12">
 			<h5 class="text-center"><a href="https://homepages.dcc.ufmg.br/~erickson/">Erickson Nascimento</a></h5>
@@ -80,10 +80,10 @@
 	<div class="col-md-5">
 	</div>
 	<div class="col-md-1">
-		<h3 class="text-center"><a href="https://github.com/verlab/2020-cag-ferreira-learningtodance-code">[Code]</a></h3>
+		<h3 class="text-center"><a href="https://github.com/verlab/Learning2Dance_CAG_2020">[Code]</a></h3>
 	</div>
 	<div class="col-md-1">
-		<h3 class="text-center"><a href="https://github.com/verlab/2020-cag-ferreira-learningtodance-code/blob/master/dataset.md">[Data]</a></h3>
+		<h3 class="text-center"><a href="https://github.com/verlab/Learning2Dance_CAG_2020/blob/master/dataset.md">[Data]</a></h3>
 	</div>
 	<div class="col-md-5">
 	</div>
@@ -128,16 +128,18 @@
               <span class="cite-title">Learning to dance: A graph convolutional adversarial network to generate realistic dance motions from audio</span>,
               Elsevier Computer and Graphics, C&A, 2020.
               <br>
-              <a href="https://arxiv.org/abs/1906.04160">PDF</a>, <a href="#gestures" role="button" data-toggle="collapse" data-target="#collapse-gestures" aria-expanded="false" aria-controls="collapse">BibTeX</a>
+              <a href="https://www.sciencedirect.com/science/article/pii/S0097849320301436?via%3Dihub">PDF</a>, <a href="#gestures" role="button" data-toggle="collapse" data-target="#collapse-gestures" aria-expanded="false" aria-controls="collapse">BibTeX</a>
               <div class="collapse" id="collapse-gestures">
               <div class="card text-left bg-light mb-4">
-                @InProceedings{ginosar2019gestures,<br> 
-        &nbsp;&nbsp;author={S. Ginosar and A. Bar and G. Kohavi and C. Chan and A. Owens and J. Malik},<br> 
-        &nbsp;&nbsp;title = {Learning Individual Styles of Conversational Gesture},<br>
-        &nbsp;&nbsp;booktitle = {Computer Vision and Pattern Recognition (CVPR)}<br> 
-        &nbsp;&nbsp;publisher = {IEEE},<br>
-        &nbsp;&nbsp;year={2019},<br> 
-        &nbsp;&nbsp;month=jun<br>
+                @article{ferreira2020cag,<br> 
+        &nbsp;&nbsp;author={João P. Ferreira and Thiago M. Coutinho and Thiago L. Gomes and José F. Neto and Rafael Azevedo and Renato Martins and Erickson R. Nascimento},<br> 
+        &nbsp;&nbsp;title = {Learning to dance: A graph convolutional adversarial network to generate realistic dance motions from audio},<br>
+        &nbsp;&nbsp;journal = {Computers & Graphics}<br> 
+        &nbsp;&nbsp;volume = {94},<br>
+        &nbsp;&nbsp;pages = {11 - 21},<br>
+        &nbsp;&nbsp;year={2021},<br> 
+		&nbsp;&nbsp;issn={0097-8493}<br>
+		&nbsp;&nbsp;doi={https://doi.org/10.1016/j.cag.2020.09.009}<br>
         }
               </div>
               </div>
@@ -152,7 +154,7 @@
 
  	<h2>Demo</h2>
  	<br>
- 	<iframe width="560" height="315" src="assets/learning_to_dance.mp4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+ 	<iframe width="560" height="315" src="https://www.youtube.com/watch?v=fGDK6UkKzvA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
   	<br>
  	<hr>
@@ -160,7 +162,7 @@
 
 	<h2>Code</h2>
 	<p>
-	<h3 class="text-center"><a href="https://github.com/verlab/2020-cag-ferreira-learningtodance-code">[PyTorch]</a></h3>
+	<h3 class="text-center"><a href="https://github.com/verlab/Learning2Dance_CAG_2020">[PyTorch]</a></h3>
 	</p>
 
  	<br>
@@ -174,13 +176,14 @@
  	</div>
 	<br>
    	 <p class="text-justify">
-   	 	We present a large, 144-hour person-specific video dataset of 10 speakers, with frame-by-frame automatically-detected pose annotations. We deliberately pick a set of speakers for which we can find hours of clean single-speaker footage. Our speakers come from a diverse set of backgrounds: television show hosts, university lecturers and televangelists. They span at least three religions and discuss a large range of topics from commentary on current affairs through the philosophy of death, chemistry and the history of rock music, to readings in the Bible and the Qur'an.
+		We build a new dataset composed of paired videos of people dancing different music styles. The dataset is used to train and evaluate the methodologies for motion generation from audio. We split the samples into training and evaluation sets that contain multimodal data for three music/dance styles: Ballet, Michael Jackson, and Salsa.  These two sets are composed of two data types: visual data from careful-selected parts of publicly available videos of dancers performing representative movements of the music style and audio data from the styles we are training. The Figure above shows some data samples of our dataset.
+
    	 </p>
-   	 <p class="text-justify">
+   	 <!-- <p class="text-justify">
    	 	Note: the data for Conan was updated recently to remove duplicate videos. The numerical results pertaining to Conan will be updated soon. 
-   	 </p>
+   	 </p> -->
    	<div>
-   		<a href="https://github.com/verlab/2020-cag-ferreira-learningtodance-code/blob/master/dataset.md" class="btn btn-outline-secondary">Download</a>
+   		<a href="https://github.com/verlab/Learning2Dance_CAG_2020/blob/master/dataset.md" class="btn btn-outline-secondary">Download</a>
    	</div>
 
    	<br>
@@ -205,7 +208,7 @@
  	 <h2>Acknowledgements</h2>
  	  <br>
  	 <p class="text-justify">
-		  This work was supported, in part, by Nvidia, Petrobras, Cnpq, Capes and Fapemig. 
+		  This work was supported, in part, by Nvidia, Cnpq, Capes and Fapemig. We use the as template for this webpage the page of <a href="http://people.eecs.berkeley.edu/~shiry/projects/speech2gesture/">Speech2Gesture</a>
  	 </p>
 
 	</div> <!-- close middle column -->
