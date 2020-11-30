@@ -312,7 +312,7 @@ def test(args,device):
     audio_model = cnn_1d_soudnet(3)
     audio_model.load_state_dict(torch.load(args.a_ckp_path))
     audio_model.to(device)
-    model = Generator(device,args.num_class,args.size_sample,args.act_layer_g,args.dropout,args.last_layer,args.type,args.ft,False)
+    model = Generator(device,args.num_class,args.dropout,False)
     model.load_state_dict(torch.load(args.ckp_path))
     model.to(device)
 

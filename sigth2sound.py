@@ -10,8 +10,6 @@ class cnn_1d_soudnet(torch.nn.Module):
         super(cnn_1d_soudnet, self).__init__()
 
         self.num_class = num_class
-        self.audio_classification = audio_classification
-
 
         self.cnn1 = torch.nn.Conv1d(1,32,64,stride=2,padding=32)
         self.norm1 = torch.nn.BatchNorm1d(32)
