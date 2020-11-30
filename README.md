@@ -58,7 +58,7 @@ There are three possible ways to setup your enviroment to run and to train the m
 
 ## Motion Generation
 
-* To generate motion using our pre-trained weights you must specify the path of the weights for both audio classifier and motion generator networks. You can download the weights [here]() or [here](). Or you can get the weights in the folder ```/weights```.
+* To generate motion using our pre-trained weights you must specify the path of the weights for both audio classifier and motion generator networks. You can download the weights [here](https://github.com/verlab/Learning2Dance_CAG_2020/blob/master/weights/generator.pt) or [here](https://github.com/verlab/Learning2Dance_CAG_2020/blob/master/weights/audio_classifier.pt). Or you can get the weights in the folder ```/weights```.
 
 * The command to test our method is as follows:
 ```shell
