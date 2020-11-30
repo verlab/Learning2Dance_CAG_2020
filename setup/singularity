@@ -10,6 +10,7 @@ From: pytorch/pytorch:1.4-cuda10.1-cudnn7-devel
     apt update -y
     apt upgrade -y
     apt install ffmpeg python3-pip pkg-config libfreetype6-dev libhdf5-serial-dev libxslt1-dev -y
+    apt-get install libsm6 libxext6 libxrender-dev -y
     pip3 install -r /tmp/requirements.txt
 %test
-    python3 -c "import torch"
+    python3.6 -c "import torch"
