@@ -3,7 +3,7 @@ astor==0.8.0
 attrs==19.3.0
 audioread==2.1.8
 beautifulsoup4==4.4.1
-bleach==1.5.0
+bleach==3.1.4
 cachetools==4.0.0
 certifi==2019.11.28
 cffi==1.12.3
@@ -51,7 +51,7 @@ opencv-python==4.1.0.25
 packaging==20.1
 pandas
 pathlib2==2.3.5
-Pillow==6.1.0
+Pillow==7.1.0
 pluggy==0.13.1
 plyfile==0.7.1
 proglog==0.1.9
@@ -85,7 +85,7 @@ tables==3.2.2
 tabulate==0.8.6
 tensorboard==2.1.0
 tensorflow-estimator==1.14.0
-tensorflow-gpu==1.14.0
+tensorflow-gpu==2.3.1
 termcolor==1.1.0
 torch==1.4.0
 #torch-cluster==1.4.5
