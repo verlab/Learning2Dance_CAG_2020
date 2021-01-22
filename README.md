@@ -14,13 +14,14 @@ Please cite L2D in your publications if it helps your research:
 
 ```
 @article{ferreira2020cag,
-  author = {Joao P. Ferreira and Thiago M. Coutinho and Thiago L. Gomes and Jose F. Neto and Rafael Azevedo and Renato Martins and Erickson R. Nascimento},
-  title = {Learning to dance: {A} graph convolutional adversarial network to generate realistic dance motions from audio},
-  journal = {Computers \& Graphics},
-  volume = {94},
-  pages = {11 -- 21},
-  year = {2021}
-}
+title = {Learning to dance: A graph convolutional adversarial network to generate realistic dance motions from audio},
+journal = {Computers \& Graphics},
+volume = {94},
+pages = {11 - 21},
+year = {2021},
+issn = {0097-8493},
+doi =  {10.1016/j.cag.2020.09.009},
+author = {J. P. {Ferreira} and T. M. {Coutinho} and T. L. {Gomes} and J. F. {Neto} and R. {Azevedo} and R. {Martins} and E. R. {Nascimento}}}
 ```
 
 ## Setup and Installation 
