@@ -1,3 +1,6 @@
+[![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Oquzbp_atXK_9jhjSo18snSk2lHn-sIk?usp=sharing)
+
 ## <b>L2D: Learning to dance from music audio</b> <br>[[Project Page]](https://verlab.github.io/Learning2Dance_CAG_2020/) [[Paper]](https://doi.org/10.1016/j.cag.2020.09.009) [[Video]](https://www.youtube.com/watch?v=fGDK6UkKzvA)
 
 PyTorch implementation of **L2D** multi-modal graph convolutional adversarial network model to generate human motion from music. The project webpage of the paper is [https://verlab.github.io/Learning2Dance_CAG_2020/](https://verlab.github.io/Learning2Dance_CAG_2020/)
@@ -67,6 +70,8 @@ python main.py -p test --input PATH_TO_AUDIO.WAV --cpk_path PATH_TO_GENERATOR_WE
 ```
 
 * Other useful parameters can be seen using the flag ```--help```. However please notice most parameters are not used in the test phase.
+
+* We also shared a Google colabotory example, the link is the begining of this README or you can acess from [here](https://colab.research.google.com/drive/1Oquzbp_atXK_9jhjSo18snSk2lHn-sIk?usp=sharing).
 
 ### Training
 
