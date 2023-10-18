@@ -48,7 +48,7 @@ def train_gcn(args,device):
         pass
 
     dataset = pose_audio_dataset(args.dataset, sample_size=64, stride=32, \
-    data_aug = 1, create_z=False, sample_rate=16000, keep_wav=True, styles_to_remove=[],pre_process=True)
+    data_aug = True, create_z=False, sample_rate=16000, keep_wav=True, styles_to_remove=[],pre_process=True)
     styles_dic = dataset.styles
     dataloaders = {
         'train' : torch.utils.data.DataLoader(dataset, batch_size=args.bs, shuffle=True, num_workers=args.workers, collate_fn=collate)
@@ -115,7 +115,6 @@ def train_gcn(args,device):
                 z = z.to(device)
                 audio = audio.to(device)
 
-                generator_optimizer_ft.zero_grad()
 
                 fake_pose = generator_network(labels,z)
 
@@ -127,11 +126,11 @@ def train_gcn(args,device):
                
                 lgen = args.lambda_l1*l1+args.lambda_discriminator*lg+args.lambda_l2*l2
 
-
+                generator_optimizer_ft.zero_grad()
                 lgen.backward(retain_graph=True)
                 generator_optimizer_ft.step()
 
-                discriminator_optimizer_ft.zero_grad()
+                fake_pose = fake_pose.detach()
                 if flip:
                     discriminator_pred_fake = discriminator(poses,labels)
                     discriminator_pred_real = discriminator(fake_pose,labels)
@@ -143,7 +142,7 @@ def train_gcn(args,device):
                 ld_fake = bce_loss(torch.flatten(discriminator_pred_fake),fake)
 
                 ld = (ld_real+ld_fake)*0.5
-
+                discriminator_optimizer_ft.zero_grad()
                 ld.backward()
                 discriminator_optimizer_ft.step()
 
@@ -170,7 +169,7 @@ def train_gcn(args,device):
                 # draw_weights('discriminator_',discriminator,summary,step)
 
         except Exception as e:
-            # print('exece',e)
+            print('exece',e)
             #print(e)
             #pdb.set_trace()
             pass
@@ -419,6 +418,8 @@ def parse_args():
     parser.add_argument('--size_video', dest='size_video', type=int, default=64, help='size of the video to be generated')
 
     parser.add_argument('--lambda_l1', dest='lambda_l1', type=int, default=100, help='Lambda L1')
+
+    parser.add_argument('--lambda_l2', dest='lambda_l2', type=int, default=0, help='Lambda L1')
 
     parser.add_argument('--lambda_discriminator', dest='lambda_discriminator', type=int, default=1, help='Lambda Discriminator')
 
