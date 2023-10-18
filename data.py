@@ -20,18 +20,20 @@ class pose_audio_dataset(torch.utils.data.Dataset):
         print("Initializing dataset...")
 
         ## LOADING METADATA
-        metadata_file = dataset_path + 'metadata_' + str(sample_size) + '_' + str(stride) + '_' + str(data_aug) + '.pickle'
+        # Legacy code.
+        metadata_file = dataset_path + 'metadata_' + str(sample_size) + '_' + str(stride) + '_' + str(int(data_aug)) + '.pickle'
 
         ## Check if file exists, if not, then create metadata.
         if not os.path.exists(metadata_file):
             print("Creating metadata file...")
             try:
-                cmd = "python create_metadata_toy.py --dataset_path " + dataset_path + " --sample_size " + str(sample_size) + \
-                    " --data_aug " + str(int(data_aug)) + " --stride " + str(stride)
+                cmd = "python ./dataset_tools/create_metadata.py --dataset_path " + dataset_path + " --sample_size " + str(sample_size) + \
+                    " --data_aug " + " --stride " + str(stride)
                 os.system(cmd)
             except:
-                cmd = "python3 create_metadata_toy.py --dataset_path " + dataset_path + " --sample_size " + str(sample_size) + \
-                    " --data_aug " + str(int(data_aug)) + " --stride " + str(stride)
+                cmd = "python3 ./dataset_tools/create_metadata.py --dataset_path " + dataset_path + " --sample_size " + str(sample_size) + \
+                    " --data_aug " + " --stride " + str(stride)
+                print(cmd)
                 os.system(cmd)
 
         with open(metadata_file, 'rb') as handle:
@@ -47,7 +49,7 @@ class pose_audio_dataset(torch.utils.data.Dataset):
         self.sample_size = sample_size
         self.sample_rate = sample_rate
         self.keep_wav = keep_wav
-        self.z_path = dataset_path + "z_data_" + str(sample_size) + '_' + str(stride) + '_' + str(data_aug) + '/'
+        self.z_path = dataset_path + "z_data_" + str(sample_size) + '_' + str(stride) + '_' + str(int(data_aug)) + '/'
         self.wavs_dict = {}
         self.num_styles = len(self.styles)
         self.styles_dict = dict(zip(range(self.num_styles),self.styles))
