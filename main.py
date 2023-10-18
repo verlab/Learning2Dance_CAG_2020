@@ -186,10 +186,7 @@ def train_gcn(args,device):
             generator_network.eval()
 
             ##RENDER TRAIN IMAGES####
-            if args.ft:
-                draw_poses = generator_network(ft_vectors,z)
-            else:
-                draw_poses = generator_network(labels,z)
+            draw_poses = generator_network(labels,z)
             output_array_gt = np.array(draw_poses.permute(0,2,3,1).cpu().data)
             for idx,pose in enumerate(output_array_gt):
                 images,images_white = render(pose,args.size_sample)
