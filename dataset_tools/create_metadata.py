@@ -164,7 +164,7 @@ def main():
             global_sample_idx = global_sample_idx + 1
 
     ## Saving pickle file
-    with open(args.dataset_path + 'metadata_' + str(args.sample_size) + '_' + str(args.stride) + '_' + str(args.data_aug) + '.pickle', 'wb') as f:
+    with open(args.dataset_path + 'metadata_' + str(args.sample_size) + '_' + str(args.stride) + '_' + str(int(args.data_aug)) + '.pickle', 'wb') as f:
         pickle.dump(samples_dict, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 if __name__ == '__main__':
