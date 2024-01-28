@@ -23,7 +23,10 @@
 * The url to the videos for training the audio classifier are in this [link](https://www.verlab.dcc.ufmg.br/l2d/datasets/l2d_audios.zip)
 
 ## Alternative download
+Alternatively you can download our datasets using this [link](https://www.kaggle.com/datasets/jpeumesmo/learning2dance/)
+<!---
 Alternatively you can download our datasets using this [link](https://drive.google.com/drive/folders/12h6f5Y_Qxq5U40hBUuUCLltrSLONiXin?usp=sharing)
+-->
 
 # Dataset Information:
 
